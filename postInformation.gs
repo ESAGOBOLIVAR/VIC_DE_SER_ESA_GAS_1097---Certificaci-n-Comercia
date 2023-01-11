@@ -1,15 +1,33 @@
 const postInformationToSheet = () => {
+  const currentlyDate = Utilities.formatDate(new Date(), "GMT-05:00", "dd/MM/yyyy:HH:mm");
   const dataSheet = [getResponses()];
+  const dataSheetMain = getDataSheet(idSheetMain,nameSheetMain)
   const sheetMain = SpreadsheetApp.openById(idSheetMain);
   let sheetName = sheetMain.getSheetByName(nameSheetMain);
-  const lastRow = sheetName.getLastRow();
-  const secuence = generarFormato("CERT_CON_2022-", "", lastRow, 4);
+  let lastRow = 1
+
+  dataSheetMain.forEach(( iteratorData  ) => {
+    if(iteratorData[0].length > 0){
+      lastRow= lastRow +1;
+    }
+  })
+  const secuence = generarFormato("CERT_COM_2023-", "", lastRow-14, 4);
+  console.log(secuence,lastRow);
   dataSheet[0].unshift(secuence);
   const urlFile = `https://drive.google.com/file/d/${dataSheet[0][8]}/view?usp=sharing`
+  if(dataSheet[0].length > 9){
+      const newArray = dataSheet[0].slice(8,dataSheet[0].length).length;
+      for(let i = 0; i < newArray;i++){
+        dataSheet[0][i + 8] = `https://drive.google.com/file/d/${dataSheet[0][i + 8]}/view?usp=sharing`;
+      }
+  }
   dataSheet[0][8] = urlFile;
   sheetName.getRange(lastRow + 1,1,dataSheet.length,dataSheet[0].length).setValues(dataSheet);
+  sheetName.getRange(`S${lastRow + 1}:S${lastRow + 1}`).setValue(currentlyDate);
   buildEmail(dataSheet);
-}
+
+};
+
 
 const generarFormato = (textoInicial, textoFinal, identificador, cantidadCeros) => {
   return textoInicial + String(identificador).padStart(cantidadCeros, 0) + textoFinal;
@@ -52,6 +70,7 @@ const buildEmail = (responses) => {
          .replaceAll("[urlImage]","https://drive.google.com/uc?export=view&id=1JRzAfDYeaAvpnJwkNw5qfmYA5xqChL7O");
 
   sendEmail(responses[0][1],subject,body);
+  sendEmail("compras@segurosbolivar.com",subject,body);
 }
 
 const serial_maker = () => {

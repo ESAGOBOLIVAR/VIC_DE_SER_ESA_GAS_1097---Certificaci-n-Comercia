@@ -1,6 +1,6 @@
 const globalParameter = () =>{
   let links = {
-    idSheetMain:"17VOjaJRZDz-c09uWedf6GuDfemREcJhj1777e4o36A4",
+    idSheetMain:"11A0efbOyWpUNzsm5IKCg_scbvn01_qJB7sIlEi8i3D8",
     idForms:"1opXGeDu7H0UlkNoGsLRy2MfqaNpyX-quxkOgpsNhs1M",
     nameSheetMain:"Respuestas del formulario Solicitud Comercial",
     nameSheetBodyEmail:"Informacion del correo"
@@ -8,8 +8,14 @@ const globalParameter = () =>{
   return links;
 }
 
+
+
 let {idSheetMain,idForms,nameSheetMain,nameSheetBodyEmail} = globalParameter();
 
+function prueba(){
+   const currentlyDate = Utilities.formatDate(new Date(), "GMT-05:00", "dd/MM/yyyy:HH:mm");
+   Logger.log(currentlyDate)
+}
 const getDataSheet = (idSheet,nombreHoja) => {
   let parameters = globalParameter();
     revisarUso(Object.values(parameters),"VIC_DE_SER_ESA_GAS_1097","N/A");
@@ -24,13 +30,9 @@ const getDataSheet = (idSheet,nombreHoja) => {
 // FUNCIONES REUTILIZABLES PARA MANEJO DE CORREOS
 
 const sendEmail = (to,subject,body) =>{
-   MailApp.sendEmail({
-      to: to,
-      subject: subject,
-      htmlBody: body
-    });
+   MailApp.sendEmail(to,subject,"",{htmlBody: body,name:"Gerencia Compras - Bolívar" }
+    );
 }
-
 
 const getBodyEmail = () => { 
   let dataEmail  = [].concat(...getDataSheet(idSheetMain,nameSheetBodyEmail));
